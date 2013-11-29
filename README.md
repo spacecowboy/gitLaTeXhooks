@@ -8,6 +8,10 @@ linking the hook script, for example the update hook:
 ln -s /path/to/gitLaTeXhooks/update /path/to/myproject/.git/hooks/update
 ```
 
+As it stands, you need to update a few variables in the scripts
+to use them. I intend to replace them with variables in your
+git config in time.
+
 ## Hooks
 
 Some of these do the same thing, but with slight differences. They
