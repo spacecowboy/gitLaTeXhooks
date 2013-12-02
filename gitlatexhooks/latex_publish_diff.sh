@@ -1,17 +1,17 @@
-#!/bin/sh
+#!/bin/bash
 
 # TODO
 # Replace these with values in git-config
 #REPO=/home/jonas/temp/bsi_lars_remote
 REPO=$(pwd)
-# Where to put output folder (see OUT_DIR)
-WEBDIR=/home/gibson/jonask/public_html/git_hooks/cindex_bsi
+# Where to put output folder (see OUTDIR)
+#OUTBASE=/home/gibson/jonask/public_html/git_hooks/cindex_bsi
 # Corresponding URL for a web client
-WEBBASE=http://home.thep.lu.se/~jonask/git_hooks/cindex_bsi
+#URLBASE=http://home.thep.lu.se/~jonask/git_hooks/cindex_bsi
 # Temporary clone directory
-WORKSPACE=/home/gibson/jonask/temp/sillywalkers25763
+#TEMPDIR=/home/gibson/jonask/temp/sillywalkers25763
 # Without .tex
-TEX_FILE_NAME=bsi
+#TEX_FILE_NAME=bsi
 
 # These should not be necessary to change
 GIT_DIFF_NAME=git_diff.html
@@ -25,30 +25,44 @@ NOW=$(date +"%Y-%m-%d-%H%M")
 BRANCH=$1 # /refs/heads/master
 # Remove /refs/heads/
 BRANCH=$(echo $BRANCH | sed 's/.*\///')
-OLD=$2 # 00301ea2af95d
+
+# 00301ea2af95d
 # Short: First 7 chars only
-OLDS=$(echo $OLD | cut -c 1-7)
-NEW=$3 # 3c8b2a4af8d
+OLD=$(echo $2 | cut -c 1-7)
+
+# 3c8b2a4af8d
 # Short version
-NEWS=$(echo $NEW | cut -c 1-7)
+NEW=$(echo $3 | cut -c 1-7)
 
 # Create output directory.
 # You can change this if you do not want
 # a new folder for each update
-OUT_DIR=$WEBDIR/$NOW-$OLDS-$NEWS
-OUT_WEB=$WEBBASE/$NOW-$OLDS-$NEWS
-# Simple output instead would be for example
-# OUT_DIR=$WEBDIR
+if [[ -z "$OUTDIR" ]]
+then
+    OUTDIR=$OUTBASE/$NOW-$OLD-$NEW
+fi
 
-mkdir $OUT_DIR
+mkdir $OUTDIR
+
+if [[ -z "$URL" ]]
+then
+    URL=$URLBASE/$NOW-$OLD-$NEW
+fi
+
+if [[ -z "$TEMPDIR" ]]
+then
+    echo "Need a tempdir!"
+    exit 1
+fi
 
 #echo "** Building and generating files **"
-echo "*** $BRANCH $OLDS -> $NEWS ***"
+echo "*** $BRANCH $OLD -> $NEW ***"
 
 # Checkout a temporary clone
-rm -rf $WORKSPACE
-git clone $REPO $WORKSPACE -b $BRANCH
-cd $WORKSPACE
+TEMPDIR="$TEMPDIR/sillytempgithook252"
+rm -rf $TEMPDIR
+git clone $REPO $TEMPDIR -b $BRANCH
+cd $TEMPDIR
 
 unset GIT_DIR
 
@@ -61,13 +75,13 @@ make pdf  > /dev/null
 #pdflatex -interaction=batchmode $TEX_FILE_NAME.tex
 
 # Copy pdf to output directory
-cp $TEX_FILE_NAME.pdf $OUT_DIR/$TEX_FILE_NAME-$NEWS.pdf
+cp $TEX_FILE_NAME.pdf $OUTDIR/$TEX_FILE_NAME-$NEW.pdf
 
 # Make a syntax highlighted diff
-git diff $OLD..$NEW | pygmentize -l diff -f html -O full > $OUT_DIR/$GIT_DIFF_NAME
+git diff $OLD..$NEW | pygmentize -l diff -f html -O full > $OUTDIR/$GIT_DIFF_NAME
 
 # Create log file
-git log $OLD..$NEW > $OUT_DIR/$GIT_LOG_NAME
+git log $OLD..$NEW > $OUTDIR/$GIT_LOG_NAME
 
 # Create latexdiff
 echo "Building diff pdf..."
@@ -82,15 +96,15 @@ pdflatex -interaction=batchmode $LDIFF.tex > /dev/null
 pdflatex -interaction=batchmode $LDIFF.tex
 
 # Copy latexdiff
-cp $LDIFF.pdf $OUT_DIR/$TEX_FILE_NAME-diff-$OLDS-$NEWS.pdf
+cp $LDIFF.pdf $OUTDIR/$TEX_FILE_NAME-diff-$OLD-$NEW.pdf
 
 # Finish by removing temporary clone
 echo "** Removing temporary directories **"
-rm -rf $WORKSPACE
+#rm -rf $TEMPDIR
 
 
 # Need to print these last in this specific order
-echo "$OUT_WEB/$TEX_FILE_NAME-$NEWS.pdf"
-echo "$OUT_WEB/$TEX_FILE_NAME-diff-$OLDS-$NEWS.pdf"
-echo "$OUT_WEB/$GIT_DIFF_NAME"
-echo "$OUT_WEB/$GIT_LOG_NAME"
+echo "$URL/$TEX_FILE_NAME-$NEW.pdf"
+echo "$URL/$TEX_FILE_NAME-diff-$OLD-$NEW.pdf"
+echo "$URL/$GIT_DIFF_NAME"
+echo "$URL/$GIT_LOG_NAME"
