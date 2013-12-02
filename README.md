@@ -1,21 +1,34 @@
 # git LaTeX Hooks
 Some convenient git hooks for LaTeX projects.
 
-Enable by checking out this project somewhere, and then
-linking the hook script, for example the update hook:
+## Quick start [update hook]
+
+Clone the projet somewhere, and then
+link the update hook:
 
 ```bash
 ln -s /path/to/gitLaTeXhooks/update /path/to/myproject/.git/hooks/update
 ```
 
-As it stands, you need to update a few variables in the scripts
-to use them. I intend to replace them with variables in your
-git config in time.
+Then set the following in your _git-config_:
+
+```
+[gitlatexhook]
+	# Folder where a temporary clone will be made
+	tempdir = /path/to/tempdir
+	# Name of your tex-file, minus .tex
+	texfilename = report
+	# Will place the pdfs somewhere in this dir
+	outbase = /www/gitlatexhook/ninja-report
+	# Base for all URLs corresponding to folder outbase
+	urlbase = http://work.com/gitlatexhook/ninja-report
+[multimailhook]
+	mailinglist = you@work.com, boss@work.com
+```
 
 ## Hooks
 
-Some of these do the same thing, but with slight differences. They
-depend on the scripts mentioned later.
+Just one for now. See it as an example to build your own hooks.
 
 ### update
 
@@ -26,11 +39,11 @@ Based on [git-multimail](https://github.com/mhagger/git-multimail/),
 this hook will generate and send e-mail reports when new things have
 been pushed to the repository.
 
-The important difference is that it also calls *latex_build_publish_diff.sh*
+The important difference is that it also calls *latex_publish_diff.sh*
 below, which builds the pdf and pdf diff. Links to these files are
 then included in the report mail.
 
-## Scripts (Dependencies)
+## Scripts
 
 These scripts do the actual work for the hooks above.
 
@@ -48,3 +61,8 @@ The paths are printed last in the script in this specific order:
 2. pdf diff url
 3. git diff url
 4. git log url
+
+### latex_publish_diff.py
+
+Convenient wrapper of the shell version. This takes care of reading
+the variables from your _git-config_.
