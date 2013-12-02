@@ -65,7 +65,7 @@ git clone $REPO $TEMPDIR -b $BRANCH
 cd $TEMPDIR
 git checkout $NEW
 
-unset GIT_DIR
+#unset GIT_DIR
 
 # Compile pdf
 echo "Building pdf..."
