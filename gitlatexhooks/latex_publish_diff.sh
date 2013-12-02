@@ -63,6 +63,7 @@ TEMPDIR="$TEMPDIR/sillytempgithook252"
 rm -rf $TEMPDIR
 git clone $REPO $TEMPDIR -b $BRANCH
 cd $TEMPDIR
+git checkout $NEW
 
 unset GIT_DIR
 
