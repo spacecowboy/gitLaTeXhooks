@@ -20,7 +20,6 @@ def _getdir():
     """Return the location of the file calling this.
     Should be present in latexhooks root"""
     path, f = os.path.split(os.path.realpath(__file__))
-    print("debug", path)
     return path
 
 def getenv(**kwargs):
@@ -73,8 +72,6 @@ def run(script, *args):
     """
 
     env = getenv()
-    print(script)
-    print(args)
     return subprocess.check_output([script] + list(args),
                                    env=env)
 
