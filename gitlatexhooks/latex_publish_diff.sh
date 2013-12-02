@@ -100,7 +100,7 @@ cp $LDIFF.pdf $OUTDIR/$TEX_FILE_NAME-diff-$OLD-$NEW.pdf
 
 # Finish by removing temporary clone
 echo "** Removing temporary directories **"
-#rm -rf $TEMPDIR
+rm -rf $TEMPDIR
 
 
 # Need to print these last in this specific order

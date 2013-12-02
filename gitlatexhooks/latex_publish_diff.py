@@ -12,8 +12,8 @@ import git_multimail
 _CONFIGSECTION = "gitlatexhook"
 
 _MISSING_VAR_ERROR = """\
-Could not find "{var}" in git-config.
-Please set {section}.{var} in your git-config.
+Could not find "{{var}}" in git-config.
+Please set {section}.{{var}} in your git-config.
 """.format(section=_CONFIGSECTION)
 
 def _getdir():
@@ -30,19 +30,19 @@ def getenv(**kwargs):
 
     Any keyword arguments specified are also set."""
 
-    config = git_multimail.Config('_CONFIGSECTION')
+    config = git_multimail.Config(_CONFIGSECTION)
     # Use this environment to call command with
     env = os.environ.copy()
 
     # Read vars, put in env
     if config.get('tempdir') is None:
-        raise ValueError(_MISSING_VAR_ERROR.format(var='tempdir')
+        raise ValueError(_MISSING_VAR_ERROR.format(var='tempdir'))
     elif config.get('texfilename') is None:
-        raise ValueError(_MISSING_VAR_ERROR.format(var='texfilename')
+        raise ValueError(_MISSING_VAR_ERROR.format(var='texfilename'))
     elif config.get('outbase') is None:
-        raise ValueError(_MISSING_VAR_ERROR.format(var='outbase')
+        raise ValueError(_MISSING_VAR_ERROR.format(var='outbase'))
     elif config.get('urlbase') is None:
-        raise ValueError(_MISSING_VAR_ERROR.format(var='urlbase')
+        raise ValueError(_MISSING_VAR_ERROR.format(var='urlbase'))
 
     env['TEMPDIR'] = config.get('tempdir').encode('UTF-8')
     env['TEX_FILE_NAME'] = config.get('texfilename').encode('UTF-8')
