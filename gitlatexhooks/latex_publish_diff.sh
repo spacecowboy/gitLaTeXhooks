@@ -63,9 +63,9 @@ TEMPDIR="$TEMPDIR/sillytempgithook252"
 rm -rf $TEMPDIR
 git clone $REPO $TEMPDIR -b $BRANCH
 cd $TEMPDIR
-git checkout $NEW
+unset GIT_DIR
 
-#unset GIT_DIR
+git checkout $NEW
 
 # Compile pdf
 echo "Building pdf..."
