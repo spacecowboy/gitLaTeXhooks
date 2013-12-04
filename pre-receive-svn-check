@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# Read commmit data from stdin
+while read oldsha newsha refname ; do
+    # Get log messages
+    log=$(git log --pretty=%b $oldsha..$newsha --grep="git-svn-id:")
+    # Check if they were committed to svn server first
+    # If not, end with error
+    if [[ -z "$log" ]]
+    then
+	echo "You need to check into svn before pushing here!"
+	exit 1
+    fi
+done
